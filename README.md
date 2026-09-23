@@ -1,172 +1,122 @@
 # Playground
 
-Playground is a CLI tool designed to make coding competitions easier to set up, run, and evaluate.
+Playground is a CLI tool that makes coding competitions easy to set up, run, and evaluate.
 
-The idea is simple: the organizer prepares the competition once, and the participant receives an already-prepared environment where they can focus on solving the challenge. Playground handles the repetitive work involved in compiling, running, testing, and evaluating code.
+The organizer prepares the competition once. Participants receive a ready-made environment and focus only on the challenge. Playground handles compiling, running, testing, and marking.
 
-## Organizer
+![Playground blueprint](blueprint.png)
 
-The organizer starts with an empty directory.
+## Quick start
 
-The organizer runs:
+**Organizer**
 
-    playground seed
+```sh
+playground seed                 # plant Playground in an empty directory
+playground configure debug      # set up a challenge
+playground endpoint <url>       # set the submission endpoint
+playground commit               # seal the environment for distribution
+```
 
-`playground seed` plants the Playground environment in the current directory and enables the Playground commands needed to prepare the competition.
+**Participant**
 
-The organizer then configures the required challenges.
+```sh
+playground enter                # enter the prepared environment
+playground lang                 # choose a language
+playground judge                # test your solution locally
+playground submit               # send your solution for evaluation
+```
 
-For example:
+## Commands
 
-    playground configure debug
-    playground configure code
+### Organizer
 
-During configuration, the organizer can prepare:
+| Command | Description |
+| --- | --- |
+| `playground seed` | Plant the Playground environment in the current (empty) directory. |
+| `playground configure <type>` | Configure a challenge, e.g. `debug` or `code`. |
+| `playground endpoint <url>` | Set the submission endpoint. |
+| `playground commit` | Finalize the setup so it can be distributed. |
 
-- Problem or challenge
-- Buggy source code
+### Participant
+
+| Command | Description |
+| --- | --- |
+| `playground enter` | Enter the prepared environment. |
+| `playground lang` | Select the language to work in. |
+| `playground judge` | Run your solution and see the result. |
+| `playground submit` | Submit your solution. |
+
+> Participants never run `playground seed`.
+
+## Organizing a competition
+
+Start in an empty directory.
+
+```sh
+playground seed
+```
+
+Configure each challenge you need:
+
+```sh
+playground configure debug
+playground configure code
+```
+
+While configuring, you can prepare:
+
+- Problem statement
+- Buggy source code or starter template
 - Test cases
 - Supported languages
-- Starter source or template
-- Marks
-- Evaluation rules
-- Other challenge configuration
+- Marks and evaluation rules
 
-The organizer can also configure the submission endpoint:
+Set where submissions go, then commit:
 
-    playground endpoint <url>
+```sh
+playground endpoint <url>
+playground commit
+```
 
-After preparing and testing the challenge, the organizer commits the setup:
+The committed environment is what you distribute to participants.
 
-    playground commit
+## Taking part
 
-The prepared environment can then be committed and distributed to the participants.
+Enter the environment you were given:
 
-## Participant
+```sh
+playground enter
+```
 
-The participant does **not** run `playground seed`.
+Pick a language, work on the challenge source, and check your progress:
 
-They receive an already-prepared Playground environment and enter it using:
+```sh
+playground lang
+playground judge
+```
 
-    playground enter
+When you are happy with the result:
 
-After entering the environment, the participant can use the commands provided for the challenge:
+```sh
+playground submit
+```
 
-    playground lang
-    playground judge
-    playground submit
+## How evaluation works
 
-The participant can see and modify the **challenge source code**, because that is the code they are expected to work on.
+```
+compile → run → provide input → capture output → check output → calculate marks
+```
 
-However, the participant should not have access to Playground's own implementation or the organizer's private evaluation data.
+The evaluator does not need to know how your program is implemented. It only needs to know how to run it, what input to give, and how the output should be checked.
 
-This includes:
+## What participants can and cannot see
 
-- Playground's source code
-- Evaluator implementation
-- Hidden test cases
-- Internal evaluation logic
-- Organizer-only configuration
+| Visible and editable | Hidden |
+| --- | --- |
+| Challenge source (e.g. the buggy program) | Playground's source code |
+| | Evaluator implementation |
+| | Hidden test cases |
+| | Internal evaluation logic |
+| | Organizer-only configuration |
 
-## Evaluation
-
-Playground handles the repetitive execution and evaluation process.
-
-Instead of the organizer manually compiling and running every submission, Playground can handle the process:
-
-    Compile
-       ↓
-    Run
-       ↓
-    Provide test input
-       ↓
-    Capture output
-       ↓
-    Check output
-       ↓
-    Calculate marks
-
-For example, a challenge may provide a program with a series of inputs. Playground starts the participant's program, provides the required input, captures its output, and evaluates that output against the configured test cases.
-
-The evaluator does not need to know how the participant's program is internally implemented. It only needs to know how to run the program, what input to provide, and how the resulting output should be checked.
-
-## Challenge Source vs Playground Source
-
-There are two different types of source code in the environment.
-
-### Challenge Source
-
-This is the code the participant is supposed to work on.
-
-For a debugging challenge, this could be the intentionally buggy program provided by the organizer.
-
-The participant must be able to:
-
-- Read the source
-- Modify the source
-- Run the program
-- Fix the problems
-- Submit the solution
-
-### Playground Source
-
-This is Playground's own implementation and evaluation machinery.
-
-The participant should not need to see or modify this.
-
-Playground keeps the evaluation process separate from the challenge source so that the participant interacts with the challenge rather than the evaluator itself.
-
-## Overall Flow
-
-    ORGANIZER
-        │
-        ▼
-    playground seed
-        │
-        ▼
-    Prepare the challenge
-        │
-        ├── Problem
-        ├── Source
-        └── Tests
-        │
-        ▼
-    Configure challenge
-        │
-        ▼
-    playground endpoint
-        │
-        ▼
-    playground commit
-        │
-        ▼
-    Prepared Environment
-        │
-        ▼
-    PARTICIPANT
-        │
-        ▼
-    playground enter
-        │
-        ▼
-    playground lang
-        │
-        ▼
-    Work on code
-        │
-        ▼
-    playground judge
-        │
-        ▼
-    playground submit
-        │
-        ▼
-    Evaluation
-
-## Main Idea
-
-The organizer prepares the challenge once.
-
-The participant enters an already-prepared environment and focuses on the challenge.
-
-Playground hides the repetitive parts of coding-event execution and evaluation behind a simple CLI, making the process easier to set up for organizers and easier to use for participants.
+Challenge source is the code you are meant to work on. Playground source is the evaluation machinery, kept separate so you interact with the challenge, not the evaluator.
