@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "playground"
+version = "0.1.0"
+dependencies = [
+    "cryptography"
+]
+
+[project.scripts]
+playground = "playground.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
